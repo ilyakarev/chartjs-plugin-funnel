@@ -152,26 +152,24 @@ module.exports = function (Chart) {
 				var dataPositions = [];
 				var originalData = dataset.data.slice();
 				helpers.each(dataset.data, function (item, index) {
-					dataPositions.push({index, value: item});
+					dataPositions.push({index: index, value: item});
 				});
 				dataPositions.sort(function (a, b) {
 					return chart.options.sort === 'asc' ? a.value - b.value : b.value - a.value;
 				});
 				// sort labels in the same manner as data sort order
-				var labels = chart.data.labels.map((value, index) => {
+                chart.data.labels = chart.data.labels.map(function(value, index){
 					return chart.data.labels[ dataPositions[index].index ];
 				});
-				chart.data.labels = labels;
 				// sort other arrays inside datasets
 				var keys = Object.keys(dataset);
 				for (var i = 0, len = keys.length; i < len; i++) {
 					var key = keys[i];
 					var arr = dataset[key];
 					if (dataset.hasOwnProperty(key) && Array.isArray(arr)) {
-						var sortedArr = arr.map((item, index) => {
+                        dataset[key] = arr.map(function(item, index){
 							return arr[dataPositions[index].index];
 						});
-						dataset[key] = sortedArr;
 					}
 				}
 			}
